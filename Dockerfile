@@ -1,6 +1,6 @@
-FROM sdhibit/rpi-raspbian:jessie
+FROM arm32v7/debian:stable
 
-MAINTAINER Simon Chuang "simon.s.chuang@gmail.com"
+MAINTAINER Julian Glatzer "jg@commail.glatzer.eu"
 
 RUN apt-get update --fix-missing && apt-get install -y \
     hostapd \
@@ -9,12 +9,15 @@ RUN apt-get update --fix-missing && apt-get install -y \
     iptables \
     dnsmasq \
     vim \
- && apt-get clean && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ADD hostapd.conf /etc/hostapd/hostapd.conf
 ADD hostapd /etc/default/hostapd
 ADD dnsmasq.conf /etc/dnsmasq.conf
 
-Add entrypoint.sh /entrypoint.sh
+ADD entrypoint.sh /entrypoint.sh
+RUN chmod a+x /entrypoint.sh
+
+VOLUME ["/hostapd"]
 
 ENTRYPOINT ["/entrypoint.sh"]
